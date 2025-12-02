@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Plants - Admin</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .alert-success {
+            background: rgba(76,175,80,0.2);
+            border-left: 4px solid #4CAF50;
+            color: #ccffcc;
+        }
+
+        .alert-error {
+            background: rgba(244,67,54,0.2);
+            border-left: 4px solid #f44336;
+            color: #ffcccc;
+        }
+
+        .add-plant-section {
+            background: rgba(76,175,80,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border: 2px solid #4CAF50;
+        }
+
+        .add-plant-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #45a049;
+        }
+
+        .plants-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            margin-top: 40px;
+        }
+
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .plant-card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(76,175,80,0.3);
+            transition: 0.3s;
+        }
+
+        .plant-card:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: #4CAF50;
+            transform: translateY(-5px);
+        }
+
+        .plant-card h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .plant-card .botanical {
+            color: #aaa;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .plant-card .benefits {
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .plant-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .edit-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #1976D2;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #d32f2f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #aaa;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #999;
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 30px;
+            padding: 12px 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-btn:hover {
+            background: black;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plant-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <div class="overlay">
+        <h1>🌱 Manage Medicinal Plants</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Add New Plant Section -->
+        <div class="add-plant-section">
+            <h2>➕ Add New Plant</h2>
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="plant_name">Plant Name *</label>
+                        <input type="text" id="plant_name" name="plant_name" placeholder="e.g., Neem" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="botanical_name">Botanical Name *</label>
+                        <input type="text" id="botanical_name" name="botanical_name" placeholder="e.g., Azadirachta indica" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="benefits">Benefits *</label>
+                    <textarea id="benefits" name="benefits" placeholder="Enter the health benefits of the plant..." required></textarea>
+                </div>
+                <button type="submit" class="add-btn">Add Plant</button>
+            </form>
+        </div>
+
+        <!-- Plants List Section -->
+        <div class="plants-section">
+            <h2>📚 All Plants ({{ plants|length }})</h2>
+            
+            {% if plants %}
+                <div class="plants-grid">
+                    {% for plant in plants %}
+                    <div class="plant-card">
+                        <h3>{{ plant['plant_name'] }}</h3>
+                        <div class="botanical">{{ plant['botanical_name'] }}</div>
+                        <div class="benefits">{{ plant['benefits'] }}</div>
+                        <div class="plant-actions">
+                            <a href="/admin/manage_plants/edit/{{ plant['id'] }}" class="edit-btn">✏️ Edit</a>
+                            <form method="POST" action="/admin/manage_plants/delete/{{ plant['id'] }}" style="flex: 1;">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this plant?');">🗑️ Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No plants found</h3>
+                    <p>Add your first medicinal plant using the form above.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <button class="back-btn" onclick="location.href='/admin_dashboard'">← Back to Dashboard</button>
+    </div>
+</div>
+
+</body>
+</html>

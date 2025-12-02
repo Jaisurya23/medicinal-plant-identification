@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.65);
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .back-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <h2>User Login</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div style="padding: 12px; margin-bottom: 15px; border-radius: 6px; {% if category == 'error' %}background: rgba(244,67,54,0.2); color: #ffcccc;{% else %}background: rgba(76,175,80,0.2); color: #ccffcc;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/user_login" method="POST">
+            
+            <label>Username</label>
+            <input type="text" placeholder="Enter username" name="username" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter password" name="password" required>
+
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <button class="back-btn" onclick="location.href='/'">Back to Home</button>
+    </div>
+
+</body>
+</html>

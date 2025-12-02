@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Users</title>
+    <style>
+        body { background-color: #f4f4f4; font-family: Arial; }
+        table { width: 90%; margin: 50px auto; border-collapse: collapse; }
+        th, td { padding: 12px; border: 1px solid #ccc; text-align: center; }
+        th { background: #4CAF50; color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .back-btn {
+            display: block; margin: 20px auto;
+            padding: 12px 20px; background: #333;
+            color: white; text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Registered Users</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Created At</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user['id'] }}</td>
+        <td>{{ user['name'] }}</td>
+        <td>{{ user['username'] }}</td>
+        <td>{{ user['email'] }}</td>
+        <td>{{ user['created_at'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a class="back-btn" href="/admin_dashboard">Back</a>
+
+</body>
+</html>

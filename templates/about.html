@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Project</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        p {
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        ul {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .btn {
+            display: block;
+            width: 250px;
+            margin: 40px auto;
+            padding: 15px;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            border: none;
+            font-size: 17px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="overlay">
+    <h1>About This Project</h1>
+
+    <div class="section">
+        <h2>🌿 Medicinal Plant Identification System</h2>
+        <p>
+            This project is designed to help users identify medicinal plants instantly using 
+            **Convolutional Neural Networks (CNN)** and **image segmentation techniques**.
+            The goal is to make traditional herbal knowledge easily accessible to everyone
+            by simply uploading an image of a leaf or plant.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>🌱 Why Medicinal Plants?</h2>
+        <p>Medicinal plants are a vital part of traditional healthcare systems across the world.
+           Many people use herbs like **Tulsi, Neem, Aloe Vera, Hibiscus**, and more for healing, 
+           immunity, skincare, and general wellness.  
+        </p>
+
+        <p>This project aims to:</p>
+        <ul>
+            <li>Promote awareness of natural medicines</li>
+            <li>Help users easily identify plant species</li>
+            <li>Digitize herbal knowledge using technology</li>
+            <li>Make plant information accessible and verified</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🧪 How the System Works</h2>
+        <p>The plant identification process follows these steps:</p>
+
+        <ul>
+            <li><b>1. Image Upload</b> – User uploads an image of the plant.</li>
+            <li><b>2. Preprocessing</b> – Resize and normalize the image.</li>
+            <li><b>3. Segmentation</b> – Extract leaf/plant area from background.</li>
+            <li><b>4. CNN Classification</b> – Predict plant name using a trained model.</li>
+            <li><b>5. Result Display</b> – Show medicinal uses, benefits, and scientific details.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🚀 Future Enhancements</h2>
+        <ul>
+            <li>Add voice-based plant search</li>
+            <li>Use mobile camera for real-time plant recognition</li>
+            <li>Expand dataset for 100+ medicinal plants</li>
+            <li>Add chatbot for herbal questions</li>
+            <li>Integrate with an Android app</li>
+        </ul>
+    </div>
+
+    <button class="btn" onclick="location.href='/'">⬅ Back to Home</button>
+</div>
+
+</body>
+</html>

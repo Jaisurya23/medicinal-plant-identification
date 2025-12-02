@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Dataset - Admin</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            color: #4CAF50;
+        }
+
+        .upload-section {
+            background: rgba(76,175,80,0.1);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px dashed #4CAF50;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-label {
+            display: block;
+            padding: 20px;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .file-label:hover {
+            background: #45a049;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .upload-btn:hover {
+            background: #1976D2;
+        }
+
+        .upload-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .info-box {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+
+        .info-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        .datasets-section {
+            margin-top: 40px;
+        }
+
+        .datasets-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .dataset-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dataset-table th {
+            background: rgba(76,175,80,0.3);
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .dataset-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dataset-table tr:hover {
+            background: rgba(76,175,80,0.1);
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: black;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .alert-success {
+            background: rgba(76,175,80,0.2);
+            border-left: 4px solid #4CAF50;
+            color: #ccffcc;
+        }
+
+        .alert-error {
+            background: rgba(244,67,54,0.2);
+            border-left: 4px solid #f44336;
+            color: #ffcccc;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <div class="overlay">
+        <h1>📁 Upload Dataset</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="upload-section">
+            <div class="info-box">
+                <h3>Upload Guidelines</h3>
+                <ul>
+                    <li><strong>Allowed Formats:</strong> JPG, JPEG, PNG, GIF, ZIP</li>
+                    <li><strong>Max File Size:</strong> 50 MB</li>
+                    <li><strong>ZIP files:</strong> Can contain multiple plant images organized in folders</li>
+                    <li><strong>Recommended:</strong> Use ZIP for bulk uploads of organized datasets</li>
+                </ul>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                <div class="file-input-wrapper">
+                    <label for="file" class="file-label">
+                        📂 Click to Select File or Drag & Drop
+                    </label>
+                    <input type="file" id="file" name="file" accept=".jpg,.jpeg,.png,.gif,.zip" required>
+                </div>
+                
+                <div class="file-name" id="fileName">No file selected</div>
+                
+                <button type="submit" class="upload-btn" id="uploadBtn">Upload File</button>
+            </form>
+        </div>
+
+        {% if datasets %}
+        <div class="datasets-section">
+            <h2>Recent Uploads</h2>
+            <table class="dataset-table">
+                <thead>
+                    <tr>
+                        <th>Original Filename</th>
+                        <th>File Size (MB)</th>
+                        <th>Uploaded By</th>
+                        <th>Upload Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dataset in datasets %}
+                    <tr>
+                        <td>{{ dataset['original_filename'] }}</td>
+                        <td>{{ "%.2f"|format(dataset['file_size'] / (1024*1024)) }}</td>
+                        <td>{{ dataset['uploaded_by'] }}</td>
+                        <td>{{ dataset['uploaded_at'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <button class="back-btn" onclick="location.href='/admin_dashboard'">← Back to Dashboard</button>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('file');
+    const fileName = document.getElementById('fileName');
+    const uploadForm = document.getElementById('uploadForm');
+
+    // Update file name display
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            const sizeMB = (file.size / (1024*1024)).toFixed(2);
+            fileName.textContent = `${file.name} (${sizeMB} MB)`;
+        }
+    });
+
+    // Drag and drop
+    uploadForm.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.opacity = '0.8';
+    });
+
+    uploadForm.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.opacity = '1';
+    });
+
+    uploadForm.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.opacity = '1';
+        
+        const files = e.dataTransfer.files;
+        if (files && files[0]) {
+            fileInput.files = files;
+            const event = new Event('change', { bubbles: true });
+            fileInput.dispatchEvent(event);
+        }
+    });
+
+    // Form submission validation
+    uploadForm.addEventListener('submit', function(e) {
+        if (!fileInput.files || !fileInput.files[0]) {
+            e.preventDefault();
+            alert('Please select a file to upload.');
+        }
+    });
+</script>
+
+</body>
+</html>

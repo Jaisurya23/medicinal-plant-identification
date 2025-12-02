@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicinal Plant Identifier</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+
+            /* Background image */
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Overlay to make text readable */
+        .overlay {
+            background: rgba(0, 0, 0, 0.55);
+            padding: 40px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="overlay">
+        <h1>Medicinal Plant Identifier</h1>
+
+        <button class="btn" onclick="location.href='/admin_login'">Admin Login</button>
+        <button class="btn" onclick="location.href='/user_login'">User Login</button>
+        <button class="btn" onclick="location.href='/register'">User Register</button>
+        <button class="btn" onclick="location.href='/about'">About Project</button>
+    </div>
+
+</body>
+</html>

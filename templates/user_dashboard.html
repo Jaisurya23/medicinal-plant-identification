@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6')
+                no-repeat center center/cover;
+            min-height: 100vh;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            min-height: 100vh;
+            padding: 40px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: block;
+            width: 260px;
+            margin: 15px auto;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 17px;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        ul {
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .logout {
+            background: #e53935 !important;
+        }
+
+        .logout:hover {
+            background: #c62828 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="overlay">
+
+        <h1>Welcome, {{ name }}</h1>
+
+        <!-- User Buttons -->
+        <a href="/upload_image" class="btn">Upload Plant Image</a>
+        <a href="/view_predictions" class="btn">View My Predictions</a>
+        <a href="/plant_list" class="btn">Medicinal Plants List</a>
+
+        <a href="/logout" class="btn logout">Logout</a>
+
+
+        <!-- Plant List Section -->
+        <div class="section">
+            <h2 style="text-align:center;">Medicinal Plants (Read-Only)</h2>
+            <ul>
+                <li><b>Amla (Phyllanthus emblica)</b> — Boosts immunity, rich in Vitamin-C.</li>
+                <li><b>Aloe Vera (Aloe barbadensis)</b> — Skin healing, digestion support.</li>
+                <li><b>Neem (Azadirachta indica)</b> — Anti-bacterial, good for skin & hair.</li>
+                <li><b>Tulsi (Holy Basil)</b> — Anti-viral, immunity booster.</li>
+            </ul>
+
+            <p style="font-size:15px; text-align:center; opacity:0.8;">
+                These plants are preloaded and cannot be edited by the user.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
