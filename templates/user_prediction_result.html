@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .image-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .image-section img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .prediction-box {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .prediction-box h2 {
+            color: #4CAF50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease-in-out;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .info-section h3 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .info-row {
+            margin-bottom: 20px;
+        }
+
+        .info-row label {
+            display: block;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .info-row .value {
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .botanical-name {
+            font-style: italic;
+            color: #8BC34A;
+            font-size: 18px;
+        }
+
+        .benefits {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #2196F3;
+        }
+
+        .top-predictions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .top-predictions h4 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+
+        .prediction-item .name {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .prediction-item .percent {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background: rgba(255, 152, 0, 0.2);
+            border-left: 4px solid #FF9800;
+            color: #ffcc80;
+        }
+
+        .alert-icon {
+            margin-right: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1976D2;
+        }
+
+        .btn-back {
+            background: #333;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: black;
+        }
+
+        @media (max-width: 768px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="overlay">
+        <h1>🌿 Plant Identification Result</h1>
+
+        <div class="result-grid">
+            <!-- Left Column: Image and Prediction -->
+            <div>
+                <div class="image-section">
+                    <img src="{{ url_for('static', filename='uploads/' + result.image_path) }}" 
+                         alt="Uploaded Plant Image">
+                    
+                    <div class="prediction-box">
+                        <h2>{{ result.predicted_plant }}</h2>
+                        <div class="confidence">
+                            Confidence: <strong>{{ result.confidence }}%</strong>
+                        </div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: {{ result.confidence }}%;">
+                                {{ result.confidence }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top 3 Predictions -->
+                <div class="top-predictions">
+                    <h4>📊 All Predictions</h4>
+                    {% for pred in result.top_predictions %}
+                    <div class="prediction-item">
+                        <span class="name">{{ pred.name }}</span>
+                        <span class="percent">{{ pred.confidence }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column: Plant Information -->
+            <div>
+                <div class="info-section">
+                    <h3>📋 Plant Information</h3>
+
+                    {% if result.plant_info %}
+                        <div class="info-row">
+                            <label>Common Name:</label>
+                            <div class="value">{{ result.plant_info.plant_name }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <label>Botanical Name:</label>
+                            <div class="value botanical-name">{{ result.plant_info.botanical_name }}</div>
+                        </div>
+
+                        <div class="info-row">
+                            <label>Medicinal Benefits:</label>
+                            <div class="value benefits">
+                                {{ result.plant_info.benefits }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert">
+                            <span class="alert-icon">⚠️</span>
+                            <strong>Information Not Available</strong>
+                            <p style="margin-top: 10px;">
+                                Detailed information for "{{ result.predicted_plant }}" 
+                                is not yet available in our database. Please contact the administrator 
+                                to add this plant's information.
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <a href="{{ url_for('user_upload') }}" class="btn btn-primary">
+                🔄 Upload Another Image
+            </a>
+            <a href="{{ url_for('plants_list') }}" class="btn btn-secondary">
+                📚 View All Plants
+            </a>
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-back">
+                🏠 Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Animate confidence bar on load
+    window.addEventListener('load', function() {
+        const confidenceFill = document.querySelector('.confidence-fill');
+        if (confidenceFill) {
+            const width = confidenceFill.style.width;
+            confidenceFill.style.width = '0%';
+            setTimeout(() => {
+                confidenceFill.style.width = width;
+            }, 100);
+        }
+    });
+</script>
+
+</body>
+</html>

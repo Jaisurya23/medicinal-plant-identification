@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicinal Plants List</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6') no-repeat center center/cover;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        }
+
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .plant-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(76, 175, 80, 0.3);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plant-card::before {
+            content: '🌿';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 40px;
+            opacity: 0.3;
+        }
+
+        .plant-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4CAF50;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(76, 175, 80, 0.3);
+        }
+
+        .plant-card h3 {
+            color: #4CAF50;
+            margin-bottom: 8px;
+            font-size: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .plant-card .botanical {
+            color: #8BC34A;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: block;
+        }
+
+        .plant-card .benefits-label {
+            color: #2196F3;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .plant-card .benefits {
+            color: #ddd;
+            line-height: 1.7;
+            font-size: 14px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .plant-card .benefits::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .plant-card .benefits::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .plant-card .benefits::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 3px;
+        }
+
+        .plant-card .benefits::-webkit-scrollbar-thumb:hover {
+            background: rgba(76, 175, 80, 0.7);
+        }
+
+        .plant-count {
+            text-align: center;
+            color: #4CAF50;
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            color: #999;
+            font-size: 24px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .back-btn {
+            display: block;
+            margin: 30px auto 0;
+            padding: 15px 40px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            width: fit-content;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .back-btn:hover {
+            background: black;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #aaa;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .plants-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .plant-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="overlay">
+        <h1>🌿 Medicinal Plants Encyclopedia</h1>
+        <p class="subtitle">Discover the healing power of nature</p>
+
+        {% if plants %}
+            <div class="plant-count">
+                📚 Total Plants: {{ plants|length }}
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search plants by name or benefits..." onkeyup="searchPlants()">
+            </div>
+
+            <div class="plants-grid" id="plantsGrid">
+                {% for plant in plants %}
+                <div class="plant-card" data-name="{{ plant['plant_name']|lower }}" data-botanical="{{ plant['botanical_name']|lower }}" data-benefits="{{ plant['benefits']|lower }}">
+                    <h3>{{ plant['plant_name'] }}</h3>
+                    <span class="botanical">{{ plant['botanical_name'] }}</span>
+                    <span class="benefits-label">💊 Medicinal Benefits:</span>
+                    <div class="benefits">{{ plant['benefits'] }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="no-results" id="noResults">
+                <h3>🔍 No plants found</h3>
+                <p>Try searching with different keywords</p>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>📭 No Plants Available</h3>
+                <p>The medicinal plants database is currently empty.<br>
+                   Please contact the administrator to add plant information.</p>
+            </div>
+        {% endif %}
+
+        <a href="{{ url_for('user_dashboard') }}" class="back-btn">⬅ Back to Dashboard</a>
+    </div>
+</div>
+
+<script>
+    function searchPlants() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const grid = document.getElementById('plantsGrid');
+        const cards = grid.getElementsByClassName('plant-card');
+        const noResults = document.getElementById('noResults');
+        let visibleCount = 0;
+
+        for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const name = card.getAttribute('data-name');
+            const botanical = card.getAttribute('data-botanical');
+            const benefits = card.getAttribute('data-benefits');
+            
+            if (name.includes(filter) || botanical.includes(filter) || benefits.includes(filter)) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        }
+
+        // Show/hide no results message
+        if (visibleCount === 0 && filter !== '') {
+            noResults.style.display = 'block';
+        } else {
+            noResults.style.display = 'none';
+        }
+    }
+
+    // Add animation on scroll
+    window.addEventListener('load', function() {
+        const cards = document.querySelectorAll('.plant-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    });
+</script>
+
+</body>
+</html>

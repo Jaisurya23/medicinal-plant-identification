@@ -241,3 +241,27 @@ def delete_plant(plant_id):
     
     except Exception as e:
         return False, f"Error deleting plant: {str(e)}"
+
+def get_plant_by_name(plant_name):
+    """Fetch a plant by name (case-insensitive, partial match)."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Try exact case-insensitive match first
+        cursor.execute('SELECT * FROM plants WHERE LOWER(plant_name) = LOWER(?)', (plant_name,))
+        plant = cursor.fetchone()
+        
+        if plant:
+            conn.close()
+            return plant
+        
+        # Try partial match if no exact match found
+        cursor.execute('SELECT * FROM plants WHERE LOWER(plant_name) LIKE LOWER(?)', (f'%{plant_name}%',))
+        plant = cursor.fetchone()
+        
+        conn.close()
+        return plant
+    except Exception as e:
+        print(f"Error fetching plant by name: {str(e)}")
+        return None

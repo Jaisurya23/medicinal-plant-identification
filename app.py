@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from database import init_db, create_user, verify_password, save_dataset, get_all_datasets, get_all_users, add_plant, get_all_plants, get_plant_by_id, update_plant, delete_plant
+from database import init_db, create_user, verify_password, save_dataset, get_all_datasets, get_all_users, add_plant, get_all_plants, get_plant_by_id, update_plant, delete_plant, get_plant_by_name
 import os
 from werkzeug.utils import secure_filename
 from train_model import train_medicinal_plant_model
@@ -24,6 +24,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 if not os.path.exists('static'):
     os.makedirs('static')
+
+if not os.path.exists('static/uploads'):
+    os.makedirs('static/uploads')
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
@@ -386,6 +389,110 @@ def predict():
             return render_template('predict.html')
     
     return render_template('predict.html', prediction=prediction, image_filename=image_filename)
+
+@app.route('/user/upload')
+def user_upload():
+    if 'user_id' not in session:
+        flash("Please log in first.", "error")
+        return redirect(url_for('user_login'))
+
+    return render_template('user_upload.html')
+
+@app.route('/user/predict', methods=['POST'])
+def user_predict():
+    """Handle user plant image prediction with detailed plant information."""
+    if 'user_id' not in session:
+        flash('Please log in first.', 'error')
+        return redirect(url_for('user_login'))
+    
+    import json
+    from tensorflow.keras.models import load_model
+    from tensorflow.keras.preprocessing import image as keras_image
+    
+    try:
+        # Check if model exists
+        if not os.path.exists(MODEL_PATH) or not os.path.exists(LABELS_PATH):
+            flash('Model has not been trained yet. Please contact admin.', 'error')
+            return redirect(url_for('user_upload'))
+        
+        # Check if file is in request
+        if 'plant_image' not in request.files:
+            flash('No file selected.', 'error')
+            return redirect(url_for('user_upload'))
+        
+        file = request.files['plant_image']
+        
+        if file.filename == '':
+            flash('No file selected.', 'error')
+            return redirect(url_for('user_upload'))
+        
+        # Validate file type
+        allowed_image_extensions = {'jpg', 'jpeg', 'png', 'gif'}
+        if not ('.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in allowed_image_extensions):
+            flash('File type not allowed. Only JPG, JPEG, PNG, GIF are accepted.', 'error')
+            return redirect(url_for('user_upload'))
+        
+        # Save uploaded file to static/uploads for display
+        original_filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_')
+        filename = timestamp + original_filename
+        filepath = os.path.join('static/uploads', filename)
+        
+        file.save(filepath)
+        
+        # Load model and labels
+        model = load_model(MODEL_PATH)
+        with open(LABELS_PATH, 'r') as f:
+            labels = json.load(f)
+        
+        # Prepare image for prediction
+        img = keras_image.load_img(filepath, target_size=(224, 224))
+        img_array = keras_image.img_to_array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+        
+        # Make prediction
+        predictions_array = model.predict(img_array, verbose=0)[0]
+        
+        # Get predicted class
+        predicted_class_idx = np.argmax(predictions_array)
+        predicted_class_name = labels[str(predicted_class_idx)]
+        confidence = float(predictions_array[predicted_class_idx]) * 100
+        
+        # Get plant information from database using improved lookup
+        plant_info = get_plant_by_name(predicted_class_name)
+        
+        # Get top 3 predictions
+        top_predictions = []
+        for idx, prob in enumerate(predictions_array):
+            plant_name = labels[str(idx)]
+            percentage = float(prob) * 100
+            top_predictions.append({
+                'name': plant_name,
+                'confidence': round(percentage, 2)
+            })
+        
+        # Sort by confidence and get top 3
+        top_predictions = sorted(top_predictions, key=lambda x: x['confidence'], reverse=True)[:3]
+        
+        result = {
+            'predicted_plant': predicted_class_name,
+            'confidence': round(confidence, 2),
+            'image_path': filename,
+            'plant_info': plant_info,
+            'top_predictions': top_predictions
+        }
+        
+        return render_template('user_prediction_result.html', result=result)
+        
+    except Exception as e:
+        flash(f'Error during prediction: {str(e)}', 'error')
+        return redirect(url_for('user_upload'))
+
+@app.route('/user/plants')
+def plants_list():
+    plants = get_all_plants()  # Fetch from database
+    return render_template('user_plant_list.html', plants=plants)
+
 
 
 if __name__ == '__main__':
