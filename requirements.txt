@@ -1,0 +1,26 @@
+# Medicinal Plant Identification - Requirements
+# Python 3.7+
+
+# Web Framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Database
+# SQLite is included with Python, no separate installation needed
+
+# Machine Learning & Deep Learning
+numpy==1.24.3
+tensorflow==2.13.0
+Pillow==10.0.0
+
+# Security & Password Hashing
+Werkzeug==2.3.7
+
+# Additional Utilities
+python-dotenv==1.0.0
+
+# Development (Optional)
+# Uncomment below if needed for development
+# pytest==7.4.0
+# black==23.9.1
+# pylint==2.17.5
